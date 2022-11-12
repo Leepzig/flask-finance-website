@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Finance Analysis</title>
+        <link rel="stylesheet" href="	https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
     </head>
 
     <body>
@@ -11,6 +12,12 @@
             <input type="file" id="myFile" name="filename">
             <button type="submit">Upload</button>
         </form>
+        <div class="dashboard">
+            <h3>Transactions List</h3>
+            {% block content %}
+            {% endblock %}
+            
+        </div>
 
 
     </body>

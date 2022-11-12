@@ -1,0 +1,24 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="table-responsive">
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                {%for header in dataframe.columns%}
+                <th scope="col">{{header}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for tup in dataframe.itertuples() %}
+            <tr>
+                
+                <td>{{tup[1]}}</td>
+                <td>{{tup[2]}}</td>  
+                <td>{{tup[3]}}</td>  
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
