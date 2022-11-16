@@ -8,12 +8,6 @@ class Transactions_Dataframe():
     def group_by_category(self):
         self.df['Category_count'] = self.df.groupby('Category')['Category'].transform('count')
         columns = ["Category", "Debit", "Category_count"]
-        summary = self.df.groupby([columns[0], columns[2]]).sum().sort_values(columns[1])
+        summary = self.df.groupby([columns[0], columns[2]], as_index=False).sum().sort_values(columns[1])
         return summary.loc[:, summary.columns.isin(columns)]
 
-
-def grp(df):
-    df['Category_count'] = df.groupby('Category')['Category'].transform('count')
-    columns = ["Category", "Debit", "Category_count"]
-    summary = df.groupby([columns[0], columns[2]]).sum().sort_values(columns[1])
-    return summary.loc[:, summary.columns.isin(columns)]
