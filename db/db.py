@@ -17,13 +17,12 @@ def upload_csv(file_name, collumn_name):
     returns: count of the documants in the new collection
     """
     db = client["csvdocs"]
-    collumn = db[collumn_name]
     # data = pd.read_csv(f"/temp_test_csv/{file_name}")
     data = pd.read_csv(f"db/temp_test_csv/October_2022.csv")
     payload = json.loads(data.to_json(orient='records'))
     # collumn.remove()
-    collumn.insert(payload)
-    return collumn.count()
+    db["cvsdocs"].insert(payload)
+    return db["cvsdocs"].count()
 
 
 print(db["csvdocs"].count_documents({}))
