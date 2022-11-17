@@ -1,10 +1,11 @@
 from pymongo import MongoClient
+import base64
 import bson
-import json
-import pandas as pd
+from bson.binary import Binary
 
 client = MongoClient("mongodb+srv://leepzig:1234@finance-app-db.m5ozabc.mongodb.net/?retryWrites=true&w=majority")
-db = client["csvdocs"]
+db = client["finance-app-db"]
+collection = db["csvdocs"]
 
 
 # collection = db['testCol']
@@ -12,22 +13,25 @@ db = client["csvdocs"]
 
 # db['csvdocs'].insert_one({"name":"Andrew","age":31})
 
-def upload_csv(file_name, collumn_name):
+def upload_csv(file_name):
     """ Imports a csv file at path csv_name to a mongo colection
     returns: count of the documants in the new collection
     """
-    db = client["csvdocs"]
     # data = pd.read_csv(f"/temp_test_csv/{file_name}")
-    data = pd.read_csv(f"db/temp_test_csv/October_2022.csv")
-    payload = json.loads(data.to_json(orient='records'))
+    file_used = f"db/temp_test_csv/October_2022.csv"
+    # payload = json.loads(data.to_json(orient='records'))
     # collumn.remove()
-    db["cvsdocs"].insert(payload)
-    return db["cvsdocs"].count()
+    # collection.insert_one(payload)
+
+    with open(file_used, "rb") as f:
+        encoded = Binary(f.read())
+        collection.insert_one({"filename": file_used, "file": encoded, "description": "test" })
+
 
 
 print(db["csvdocs"].count_documents({}))
 
-upload_csv(file_name="October_2022.csv", collumn_name="csv" )
+upload_csv(file_name="October_2022.csv")
 
 new_count = db["csvdocs"].count_documents({})
 print(f"2nd Count: {new_count}")
