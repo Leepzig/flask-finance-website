@@ -8,7 +8,7 @@ app = Flask(__name__)
 # testing df display:
 dataframe = pd.read_csv("./temp_test_csv/October_2022.csv")
 
-df = Transactions_Dataframe.Transactions_Dataframe("./temp_test_csv/October_2022.csv")
+df = Transactions_Dataframe.Transactions_Dataframe("./db/temp_test_csv/October_2022.csv")
 
 
 

@@ -13,26 +13,27 @@ collection = db["csvdocs"]
 
 # db['csvdocs'].insert_one({"name":"Andrew","age":31})
 
-def upload_csv(file_name):
-    """ Imports a csv file at path csv_name to a mongo colection
+def upload_csv(file_path):
+    """ Imports a csv file at path csv_name to a mongo collection
     returns: count of the documants in the new collection
     """
-    # data = pd.read_csv(f"/temp_test_csv/{file_name}")
-    file_used = f"db/temp_test_csv/October_2022.csv"
-    # payload = json.loads(data.to_json(orient='records'))
-    # collumn.remove()
-    # collection.insert_one(payload)
+    file_name = file_path.split("/")[-1]
 
-    with open(file_used, "rb") as f:
+    with open(file_path, "rb") as f:
         encoded = Binary(f.read())
-        collection.insert_one({"filename": file_used, "file": encoded, "description": "test" })
+        collection.insert_one({"filename": file_name, "file": encoded, "description": "test" })
+
+
+def get_csv():
+    return collection.find_one({"filename":"October_2022.csv"})
 
 
 
-print(db["csvdocs"].count_documents({}))
+print(db["csvdocs"].count_documents({"description":"test"}))
 
-upload_csv(file_name="October_2022.csv")
-
+# upload_csv(file_path=f"db/temp_test_csv/October_2022.csv")
+print(get_csv())
+# db["csvdocs"].delete_many({"description":"test"})
 new_count = db["csvdocs"].count_documents({})
 print(f"2nd Count: {new_count}")
 
