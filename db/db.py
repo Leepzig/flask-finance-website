@@ -24,15 +24,15 @@ def upload_csv(file_path):
         collection.insert_one({"filename": file_name, "file": encoded, "description": "test" })
 
 
-def get_csv():
-    return collection.find_one({"filename":"October_2022.csv"})
+def get_csv(filename):
+    return collection.find_one({"filename":f"{filename}"})
 
 
 
 print(db["csvdocs"].count_documents({"description":"test"}))
 
 # upload_csv(file_path=f"db/temp_test_csv/October_2022.csv")
-print(get_csv())
+print(get_csv("October_2022.csv"))
 # db["csvdocs"].delete_many({"description":"test"})
 new_count = db["csvdocs"].count_documents({})
 print(f"2nd Count: {new_count}")
