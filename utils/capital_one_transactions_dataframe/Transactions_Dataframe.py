@@ -3,7 +3,10 @@ import pandas as pd
 class Transactions_Dataframe():
 
     def __init__(self, file):
-        self.df = pd.read_csv(file)
+        try:
+            self.df = pd.read_csv(file)
+        except Exception:
+            pass
 
     def group_by_category(self):
         self.df['Category_count'] = self.df.groupby('Category')['Category'].transform('count')

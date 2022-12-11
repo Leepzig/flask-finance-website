@@ -1,43 +1,113 @@
-from pymongo import MongoClient
-import base64
-import bson
-from bson.binary import Binary
 
-client = MongoClient("mongodb+srv://leepzig:1234@finance-app-db.m5ozabc.mongodb.net/?retryWrites=true&w=majority")
-db = client["finance-app-db"]
-collection = db["csvdocs"]
+import os
+import psycopg2
+import csv
+import datetime
 
+conn = psycopg2.connect(
+        host="localhost",
+        database="financewebapp",
+        user=os.environ.get('DB_USERNAME'),
+        password=os.environ.get('DB_PASSWORD'))
 
-# collection = db['testCol']
-# db.create_collection("csvdocs", { "capped":True, "autoIndexID":True, "size" : 6142800, "max" : 10000}) 
+# Open a cursor to perform database operations
+cur = conn.cursor()
 
-# db['csvdocs'].insert_one({"name":"Andrew","age":31})
-
-def upload_csv(file_path):
-    """ Imports a csv file at path csv_name to a mongo collection
-    returns: count of the documants in the new collection
-    """
-    file_name = file_path.split("/")[-1]
-
-    with open(file_path, "rb") as f:
-        encoded = Binary(f.read())
-        collection.insert_one({"filename": file_name, "file": encoded, "description": "test" })
+# Execute a command: this creates a new table
+result = cur.execute('SELECT * FROM transactions;')
 
 
-def get_csv(filename):
-    return collection.find_one({"filename":f"{filename}"})
+def get_all_transactions():
+    with conn.cursor() as cur:
+        result = cur.execute("SELECT * FROM transactions;")
+    return result
+
+#TODO: type checking?
+def insert_one(record):
+    with conn.cursor() as cur:
+        cur.execute(f"""
+        INSERT INTO transactions (transaction_date, posted_date, card_number, description, category, debited_amount, credited_amount)
+        VALUES({record['transaction_date']},{record['posted_date']},{record['card_number']},{record['description']},{record['category']},{record['debited_amount']},{record['credited_amount']})
+        """)
+
+def create_transactions_table():
+    with conn.cursor() as cur:
+        cur.execute("""
+        CREATE TABLE IF NOT EXIST Transactions
+        (id serial primary key, 
+        Transaction_Date date, 
+        Posted_Date date, 
+        Card_Number int, 
+        Description text, 
+        Category varchar(30), 
+        Debited_Amount numberic(4,2), 
+        Credited_Amount numeric(4,2)
+        );
+        """)
+
+#TODO: calling insert_one over and over is probably bad practice and not effcient at all, rework.
+def insert_many(records):
+    with conn.cursor() as cur:
+        for r in records:
+            insert_one(r)
+
+# cur.execute('CREATE TABLE books (id serial PRIMARY KEY,'
+#                                  'title varchar (150) NOT NULL,'
+#                                  'author varchar (50) NOT NULL,'
+#                                  'pages_num integer NOT NULL,'
+#                                  'review text,'
+#                                  'date_added date DEFAULT CURRENT_TIMESTAMP);'
+#                                  )
+
+# Insert data into the table
+
+# cur.execute('INSERT INTO books (title, author, pages_num, review)'
+#             'VALUES (%s, %s, %s, %s)',
+#             ('A Tale of Two Cities',
+#              'Charles Dickens',
+#              489,
+#              'A great classic!')
+#             )
 
 
+# cur.execute('INSERT INTO books (title, author, pages_num, review)'
+#             'VALUES (%s, %s, %s, %s)',
+#             ('Anna Karenina',
+#              'Leo Tolstoy',
+#              864,
+#              'Another great classic!')
+#             )
+# print(result)
+# conn.commit()
 
-print(db["csvdocs"].count_documents({"description":"test"}))
+# cur.close()
+# conn.close()
 
-# upload_csv(file_path=f"db/temp_test_csv/October_2022.csv")
-print(get_csv("October_2022.csv"))
-# db["csvdocs"].delete_many({"description":"test"})
-new_count = db["csvdocs"].count_documents({})
-print(f"2nd Count: {new_count}")
+def convert_date(date_string):
+    format = "%Y-%m-%d"
+    d = datetime.datetime.strptime(date_string, format)
+    return d.date()
+
+def get_obj(row):
+    keys = ['transaction_date', 'posted_date', 'card_number', 'description', 'category', 'debited_amount', 'credited_amount']
+    obj = {}
+    for index in range(len(row)):
+        if row[index] == "":
+            obj[keys[index]] = None
+        elif 'date' in keys[index]:
+            obj[keys[index]] = convert_date(row[index])
+        else:
+            obj[keys[index]] = row[index]
+    return obj
+
+with open("./db/temp_test_csv/August_2022.csv", 'r') as file:
+  csvreader = csv.reader(file)
+  next(csvreader)
+
+  for row in csvreader:
+    obj = get_obj(row)
+    print(obj)
+    insert_one(obj)
+    break
 
 
-
-# doc_count = collection.count_documents({})
-# print(doc_count)
