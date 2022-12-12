@@ -27,7 +27,7 @@ def insert_one(record):
     with conn.cursor() as cur:
         cur.execute(f"""
         INSERT INTO transactions (transaction_date, posted_date, card_number, description, category, debited_amount, credited_amount)
-        VALUES({record['transaction_date']},{record['posted_date']},{record['card_number']},{record['description']},{record['category']},{record['debited_amount']},{record['credited_amount']})
+        VALUES('{record['transaction_date']}'::date,'{record['posted_date']}'::date,{record['card_number']},'{record['description']}','{record['category']}',{record['debited_amount']},{record['credited_amount']})
         """)
 
 def create_transactions_table():
@@ -51,37 +51,7 @@ def insert_many(records):
         for r in records:
             insert_one(r)
 
-# cur.execute('CREATE TABLE books (id serial PRIMARY KEY,'
-#                                  'title varchar (150) NOT NULL,'
-#                                  'author varchar (50) NOT NULL,'
-#                                  'pages_num integer NOT NULL,'
-#                                  'review text,'
-#                                  'date_added date DEFAULT CURRENT_TIMESTAMP);'
-#                                  )
 
-# Insert data into the table
-
-# cur.execute('INSERT INTO books (title, author, pages_num, review)'
-#             'VALUES (%s, %s, %s, %s)',
-#             ('A Tale of Two Cities',
-#              'Charles Dickens',
-#              489,
-#              'A great classic!')
-#             )
-
-
-# cur.execute('INSERT INTO books (title, author, pages_num, review)'
-#             'VALUES (%s, %s, %s, %s)',
-#             ('Anna Karenina',
-#              'Leo Tolstoy',
-#              864,
-#              'Another great classic!')
-#             )
-# print(result)
-# conn.commit()
-
-# cur.close()
-# conn.close()
 
 def convert_date(date_string):
     format = "%Y-%m-%d"
@@ -93,7 +63,7 @@ def get_obj(row):
     obj = {}
     for index in range(len(row)):
         if row[index] == "":
-            obj[keys[index]] = None
+            obj[keys[index]] = 'Null'
         elif 'date' in keys[index]:
             obj[keys[index]] = convert_date(row[index])
         else:
