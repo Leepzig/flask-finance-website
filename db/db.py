@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 
 secret = Path(".env")
-print(secret)
+
 load_dotenv(secret)
 
 
@@ -34,10 +34,11 @@ def get_all_transactions():
 #TODO: type checking?
 def insert_one(record):
     with conn.cursor() as cur:
-        cur.execute(f"""
-        INSERT INTO transactions (transaction_date, posted_date, card_number, description, category, debited_amount, credited_amount)
-        VALUES('{record['transaction_date']}'::date,'{record['posted_date']}'::date,{record['card_number']},'{record['description']}','{record['category']}',{record['debited_amount']},{record['credited_amount']})
-        """)
+        print(f"BEFORE EXECUTE: {record}")
+        cur.execute("""
+            INSERT INTO transactions (transaction_date, posted_date, card_number, description, category, debited_amount, credited_amount)
+            VALUES(%s, %s, %s, %s, %s, %s, %s);
+            """, (record['transaction_date'], record['posted_date'], record['card_number'], record['description'], record['category'], record['debited_amount'], record['credited_amount']))
 
 def create_transactions_table():
     with conn.cursor() as cur:
@@ -49,9 +50,10 @@ def create_transactions_table():
         Card_Number int, 
         Description text, 
         Category varchar(30), 
-        Debited_Amount numeric(4,2), 
-        Credited_Amount numeric(4,2)
+        Debited_Amount numeric(10,2), 
+        Credited_Amount numeric(10,2)
         );
+        COMMIT;
         """)
 
 #TODO: calling insert_one over and over is probably bad practice and not effcient at all, rework.
@@ -72,7 +74,7 @@ def get_obj(row):
     obj = {}
     for index in range(len(row)):
         if row[index] == "":
-            obj[keys[index]] = 'Null'
+            obj[keys[index]] = 0
         elif 'date' in keys[index]:
             obj[keys[index]] = convert_date(row[index])
         else:
@@ -88,9 +90,10 @@ with open("./db/temp_test_csv/december_2022.csv", 'r') as file:
     next(csvreader)
 
     for row in csvreader:
+        print(row)
         obj = get_obj(row)
-        print(obj)
+        # print(obj)
         insert_one(obj)
-        break
+        
 
 
