@@ -2,5 +2,5 @@ Flask==2.2.2
 pandas
 pymongo
 bson
-json
+python-dotenv
 psycopg2

@@ -3,10 +3,19 @@ import os
 import psycopg2
 import csv
 import datetime
+from pathlib import Path
+from dotenv import load_dotenv
+
+
+secret = Path(".env")
+print(secret)
+load_dotenv(secret)
+
+
 
 conn = psycopg2.connect(
         host="localhost",
-        database="financewebapp",
+        database="finances",
         user=os.environ.get('DB_USERNAME'),
         password=os.environ.get('DB_PASSWORD'))
 
@@ -14,7 +23,7 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 # Execute a command: this creates a new table
-result = cur.execute('SELECT * FROM transactions;')
+# result = cur.execute('SELECT * FROM transactions;')
 
 
 def get_all_transactions():
@@ -33,14 +42,14 @@ def insert_one(record):
 def create_transactions_table():
     with conn.cursor() as cur:
         cur.execute("""
-        CREATE TABLE IF NOT EXIST Transactions
+        CREATE TABLE IF NOT EXISTS Transactions
         (id serial primary key, 
         Transaction_Date date, 
         Posted_Date date, 
         Card_Number int, 
         Description text, 
         Category varchar(30), 
-        Debited_Amount numberic(4,2), 
+        Debited_Amount numeric(4,2), 
         Credited_Amount numeric(4,2)
         );
         """)
@@ -70,14 +79,18 @@ def get_obj(row):
             obj[keys[index]] = row[index]
     return obj
 
-with open("./db/temp_test_csv/August_2022.csv", 'r') as file:
-  csvreader = csv.reader(file)
-  next(csvreader)
 
-  for row in csvreader:
-    obj = get_obj(row)
-    print(obj)
-    insert_one(obj)
-    break
+
+
+with open("./db/temp_test_csv/december_2022.csv", 'r') as file:
+    create_transactions_table()
+    csvreader = csv.reader(file)
+    next(csvreader)
+
+    for row in csvreader:
+        obj = get_obj(row)
+        print(obj)
+        insert_one(obj)
+        break
 
 
