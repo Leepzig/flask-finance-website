@@ -15,3 +15,19 @@
             INSERT INTO transactions (transaction_date, posted_date, card_number, description, category, debited_amount, credited_amount)
             VALUES(%(transaction_date)s, %(posted_date)s, %(credited_amount)s, %(card_number)s, %(description)s, %(category)s, %(debited_amount)s, %(credited_amount)s);
             """, (record[0], record[1], record[2], record[3], record[4], record[5], record[6]))
+
+
+## Use this link to rework the insert logic:
+- https://www.tutorialspoint.com/python_data_access/python_postgresql_where_clause.htm
+
+def get_obj(row):
+    keys = ['transaction_date', 'posted_date', 'card_number', 'description', 'category', 'debited_amount', 'credited_amount']
+    obj = {}
+    for index in range(len(row)):
+        if row[index] == "":
+            obj[keys[index]] = 0
+        elif 'date' in keys[index]:
+            obj[keys[index]] = convert_date(row[index])
+        else:
+            obj[keys[index]] = row[index]
+    return obj
