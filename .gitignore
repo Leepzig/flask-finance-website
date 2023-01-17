@@ -3,3 +3,4 @@ db/temp_test_csv/
 /.csv
 .env
 venv/
+NOTES.md
