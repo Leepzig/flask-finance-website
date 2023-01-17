@@ -68,7 +68,7 @@ def create_transactions_table():
         COMMIT;
         """)
 
-#TODO: calling insert_one over and over is probably bad practice and not effcient at all, rework.
+#TODO: See if we can refactor this to be a little cleaner
 def insert_many(file="./db/temp_test_csv/december_2022.csv"):
     with open(file, 'r') as file:
         create_transactions_table()
@@ -95,16 +95,16 @@ def convert_date(date_string):
     d = datetime.datetime.strptime(date_string, format)
     return d.date()
 
-#Creates a dictionary from the row to make the sql statements more readable
+
 #Also gives us the option to perform other actions and catch values, like an empty string and convert dates, ect
 #TODO I think the logic could be reworked here.
 def get_obj(row):
-    keys = ['transaction_date', 'posted_date', 'card_number', 'description', 'category', 'debited_amount', 'credited_amount']
+    columns = ['transaction_date', 'posted_date', 'card_number', 'description', 'category', 'debited_amount', 'credited_amount']
     obj = []
     for index in range(len(row)):
         if row[index] == "":
             obj.append(0)
-        elif 'date' in keys[index]:
+        elif 'date' in columns[index]:
             obj.append(convert_date(row[index]))
         else:
             obj.append(row[index])
