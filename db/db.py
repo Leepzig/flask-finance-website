@@ -49,8 +49,7 @@ def insert_one(record):
             INSERT INTO transactions (transaction_date, posted_date, card_number, description, category, debited_amount, credited_amount)
             VALUES(%s, %s, %s, %s, %s, %s, %s);
             """
-        data = (record['transaction_date'], record['posted_date'], record['card_number'], record['description'], record['category'], record['debited_amount'], record['credited_amount'])
-        cur.execute(sql_insert_statement, data)
+        cur.execute(sql_insert_statement, record)
 
 #Creates transactions table if it doesn't already exist
 def create_transactions_table():
@@ -98,12 +97,11 @@ def convert_date(date_string):
 
 #Creates a dictionary from the row to make the sql statements more readable
 #Also gives us the option to perform other actions and catch values, like an empty string and convert dates, ect
+#TODO I think the logic could be reworked here.
 def get_obj(row):
     keys = ['transaction_date', 'posted_date', 'card_number', 'description', 'category', 'debited_amount', 'credited_amount']
     obj = []
     for index in range(len(row)):
-        print(index)
-        print(row)
         if row[index] == "":
             obj.append(0)
         elif 'date' in keys[index]:
