@@ -2,3 +2,4 @@ db/temp_test_csv/
 .DS_Store
 /.csv
 .env
+venv/
