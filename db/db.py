@@ -6,12 +6,8 @@ import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 
-
 secret = Path(".env")
-
 load_dotenv(secret)
-
-
 
 conn = psycopg2.connect(
         host="localhost",
@@ -20,21 +16,41 @@ conn = psycopg2.connect(
         password=os.environ.get('DB_PASSWORD'))
 
 conn.autocommit = True
-
-# Open a cursor to perform database operations
 cur = conn.cursor()
-
-# Execute a command: this creates a new table
-# result = cur.execute('SELECT * FROM transactions;')
 
 ###################### GET FUNCTIONS ######################
 def get_all_transactions():
     with conn.cursor() as cur:
-        result = cur.execute("SELECT * FROM transactions;")
-        print(result)
-        print(cur.fetchall())
+        cur.execute("SELECT * FROM transactions;")
+        result = cur.fetchall()
     return result
 
+def get_transactions_in_specified_time(start_date, end_date):
+    with conn.cursor() as cur:
+        sql = """ SELECT transaction_date, category, description, debited_amount FROM transactions
+            WHERE transaction_date between %s and %s
+        """
+        cur.execute(sql, (start_date, end_date))
+        result = cur.fetchall()
+    return {"table": result, "total":get_total(result, 3)}
+
+def get_transactions_summary_timeframe(start_date, end_date):
+    with conn.cursor() as cur:
+        sql = """SELECT category, sum(debited_amount) totals FROM transactions
+            GROUP BY category ORDER BY totals DESC;
+        """
+        cur.execute(sql, (start_date, end_date))
+        result = cur.fetchall()
+        return {"table":result, "total":get_total(result, 1)}
+
+
+##################### Data Manipulation Helper Functions ##############
+
+def get_total(rows, amount_index):
+    total = 0
+    for line in rows:
+        total+= line[amount_index]
+    return total
 
 ##################### INSERT and CREATE FUNCTIONS ###################
 
@@ -85,9 +101,6 @@ def insert_many(file="./db/temp_test_csv/december_2022.csv"):
             cur.executemany(sql_insert_statement, list_of_record_dicts)
         
         
-        
-        
-        
 
 #Used to convert the date format in Capitalone CSVs to date for postgresql
 def convert_date(date_string):
@@ -124,5 +137,6 @@ def get_obj(row):
 #         # print(obj)
 #         insert_one(obj)
         
-insert_many()
-
+# insert_many()
+result = get_transactions_summary_timeframe('2022-12-01','2022-12-31')
+print(result)
