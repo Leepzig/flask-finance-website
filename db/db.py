@@ -27,21 +27,24 @@ def get_all_transactions():
 
 def get_transactions_in_specified_time(start_date, end_date):
     with conn.cursor() as cur:
+        columns = ["transaction_date", "category", "description", "debited_amount"]
         sql = """ SELECT transaction_date, category, description, debited_amount FROM transactions
             WHERE transaction_date between %s and %s
         """
+
         cur.execute(sql, (start_date, end_date))
         result = cur.fetchall()
-    return {"table": result, "total":get_total(result, 3)}
+    return {"table": result, "total":get_total(result, 3), "columns":columns}
 
 def get_transactions_summary_timeframe(start_date, end_date):
     with conn.cursor() as cur:
         sql = """SELECT category, sum(debited_amount) totals FROM transactions
             GROUP BY category ORDER BY totals DESC;
         """
+        columns = ['category', 'totals']
         cur.execute(sql, (start_date, end_date))
         result = cur.fetchall()
-        return {"table":result, "total":get_total(result, 1)}
+        return {"table":result, "total":get_total(result, 1), "columns":columns}
 
 
 ##################### Data Manipulation Helper Functions ##############
@@ -138,5 +141,5 @@ def get_obj(row):
 #         insert_one(obj)
         
 # insert_many()
-result = get_transactions_summary_timeframe('2022-12-01','2022-12-31')
-print(result)
+# result = get_transactions_summary_timeframe('2022-12-01','2022-12-31')
+# print(result)

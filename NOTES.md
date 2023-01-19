@@ -31,3 +31,19 @@ def get_obj(row):
         else:
             obj[keys[index]] = row[index]
     return obj
+
+
+# View different Tables
+### Input a Calendar where you can select dates
+### a submit button should send the dates to the backend
+### the dates should get passed to the database
+### the backend should respond with a new table
+
+# Enable csv upload
+### Make upload input DONE
+### MAke location for the upload files to get stored
+### trigger an automated process to upload the data to the database
+### Return the data? Return what? at least a confirmation message.
+### Put a timestamp of when the data was uploaded and we can query for the data like that.
+
+
