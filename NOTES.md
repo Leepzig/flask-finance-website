@@ -45,5 +45,6 @@ def get_obj(row):
 ### trigger an automated process to upload the data to the database
 ### Return the data? Return what? at least a confirmation message.
 ### Put a timestamp of when the data was uploaded and we can query for the data like that.
+https://stackoverflow.com/questions/38245025/how-to-insert-current-datetime-in-postgresql-insert-query
 
 

@@ -38,9 +38,12 @@ def get_transactions_in_specified_time(start_date, end_date):
 
 def get_transactions_summary_timeframe(start_date, end_date):
     with conn.cursor() as cur:
-        sql = """SELECT category, sum(debited_amount) totals FROM transactions
-            GROUP BY category ORDER BY totals DESC;
+        sql = """SELECT category, sum(debited_amount) totals FROM (SELECT transaction_date, category, description, debited_amount FROM transactions
+            WHERE transaction_date between %s and %s) AS all_records
+            GROUP BY category 
+            ORDER BY totals DESC;
         """
+
         columns = ['category', 'totals']
         cur.execute(sql, (start_date, end_date))
         result = cur.fetchall()

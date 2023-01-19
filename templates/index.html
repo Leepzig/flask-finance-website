@@ -13,6 +13,22 @@
             <button type="submit">Upload</button>
         </form>
         <div class="dashboard">
+            <br/>
+            <form method="POST" action="">
+                <label for="start_date" name="start_date">Start Date</label>
+                <input name="start_date" type="date"/>
+                <label name="end_date">End Date</label>
+                <input name="end_date" type="date"/>
+                <br>
+                <label name="table_type">Table Type:</label>
+                <!-- <input name="table_type" type="text"/> -->
+                <select name="table_type" id="table_type">
+                    <option value="summary">Summary</option>
+                    <option value="details">Details</option>
+                </select>
+                <input type="submit" value="Submit"/>
+            </form>
+            <br/>
             
             {% block content %}
             {% endblock %}
