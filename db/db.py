@@ -57,7 +57,7 @@ def get_recently_uploaded_data():
         columns = ["transaction_date", "category", "description", "debited_amount"]
         cur.execute(sql)
         result = cur.fetchall()
-        return {"table":result, "total":get_total(result, 1), "columns":columns}
+        return {"table":result, "total":get_total(result, 3), "columns":columns}
 
 
 ##################### Data Manipulation Helper Functions ##############
@@ -75,8 +75,6 @@ def get_total(rows, amount_index):
 #Inserts one record(dictionary) using paramatized variables to prevent sql injection
 def insert_one(record):
     with conn.cursor() as cur:
-        print(f"BEFORE EXECUTE: {record}")
-
         sql_insert_statement = """
             INSERT INTO transactions (transaction_date, posted_date, card_number, description, category, debited_amount, credited_amount, created_at)
             VALUES(%s, %s, %s, %s, %s, %s, %s, current_timestamp);
@@ -102,7 +100,7 @@ def create_transactions_table():
         """)
 
 #TODO: See if we can refactor this to be a little cleaner
-def insert_many(file="./db/temp_csv/december_2022.csv"):
+def insert_many(file):
     with open(file, 'r') as file:
         create_transactions_table()
         csvreader = csv.reader(file)
@@ -156,6 +154,4 @@ def get_obj(row):
 #         # print(obj)
 #         insert_one(obj)
         
-insert_many()
-result = get_transactions_summary_timeframe('2022-12-01','2022-12-31')
-print(result)
+

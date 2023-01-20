@@ -37,6 +37,15 @@
                 {%endfor%}
             </tr>
             {% endfor %}
+            <tr>
+                <td>Totals</td>
+                {% for col in dataframe['columns']%}
+                    {%if col == dataframe['columns'][-1]%}
+                        <td>{{dataframe['total']}}</td>
+                    {%endif%}
+                {% endfor %}
+            </tr>
+            
         </tbody>
     </table>
 </div>
