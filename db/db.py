@@ -49,6 +49,16 @@ def get_transactions_summary_timeframe(start_date, end_date):
         result = cur.fetchall()
         return {"table":result, "total":get_total(result, 1), "columns":columns}
 
+#returns a table of data uploaded within the past minute
+def get_recently_uploaded_data():
+    with conn.cursor() as cur:
+        sql = """SELECT transaction_date, category, description, debited_amount FROM transactions
+        WHERE created_at >= (NOW() - '1 minute'::interval) AND created_at <= now();"""
+        columns = ["transaction_date", "category", "description", "debited_amount"]
+        cur.execute(sql)
+        result = cur.fetchall()
+        return {"table":result, "total":get_total(result, 1), "columns":columns}
+
 
 ##################### Data Manipulation Helper Functions ##############
 
