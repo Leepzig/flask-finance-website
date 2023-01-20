@@ -68,8 +68,8 @@ def insert_one(record):
         print(f"BEFORE EXECUTE: {record}")
 
         sql_insert_statement = """
-            INSERT INTO transactions (transaction_date, posted_date, card_number, description, category, debited_amount, credited_amount)
-            VALUES(%s, %s, %s, %s, %s, %s, %s);
+            INSERT INTO transactions (transaction_date, posted_date, card_number, description, category, debited_amount, credited_amount, created_at)
+            VALUES(%s, %s, %s, %s, %s, %s, %s, current_timestamp);
             """
         cur.execute(sql_insert_statement, record)
 
@@ -85,25 +85,30 @@ def create_transactions_table():
         Description text, 
         Category varchar(30), 
         Debited_Amount numeric(10,2), 
-        Credited_Amount numeric(10,2)
+        Credited_Amount numeric(10,2),
+        created_at timestamp default current_timestamp
         );
         COMMIT;
         """)
 
 #TODO: See if we can refactor this to be a little cleaner
-def insert_many(file="./db/temp_test_csv/december_2022.csv"):
+def insert_many(file="./db/temp_csv/december_2022.csv"):
     with open(file, 'r') as file:
         create_transactions_table()
         csvreader = csv.reader(file)
         next(csvreader) #this skips the header
         list_of_record_dicts = []
         for row in csvreader:
-            list_of_record_dicts.append(get_obj(row))
+            if row:
+                list_of_record_dicts.append(get_obj(row))
         with conn.cursor() as cur:
+            
             sql_insert_statement = """
                 INSERT INTO transactions (transaction_date, posted_date, card_number, description, category, debited_amount, credited_amount)
                 VALUES(%s, %s, %s, %s, %s, %s, %s);
                 """
+            print("BEFPRE SQL STATEMETN")
+            print(list_of_record_dicts[1])
             cur.executemany(sql_insert_statement, list_of_record_dicts)
         
         
@@ -143,6 +148,6 @@ def get_obj(row):
 #         # print(obj)
 #         insert_one(obj)
         
-# insert_many()
-# result = get_transactions_summary_timeframe('2022-12-01','2022-12-31')
-# print(result)
+insert_many()
+result = get_transactions_summary_timeframe('2022-12-01','2022-12-31')
+print(result)

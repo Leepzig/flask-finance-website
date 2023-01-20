@@ -1,4 +1,4 @@
-db/temp_test_csv/
+db/temp_csv/
 .DS_Store
 /.csv
 .env

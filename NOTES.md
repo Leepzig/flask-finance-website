@@ -32,12 +32,12 @@ def get_obj(row):
             obj[keys[index]] = row[index]
     return obj
 
-
+DONE
 # View different Tables
-### Input a Calendar where you can select dates
-### a submit button should send the dates to the backend
-### the dates should get passed to the database
-### the backend should respond with a new table
+### Input a Calendar where you can select dates DONE
+### a submit button should send the dates to the backend DONE
+### the dates should get passed to the database DONE
+### the backend should respond with a new table DONE
 
 # Enable csv upload
 ### Make upload input DONE

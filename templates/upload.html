@@ -1,0 +1,8 @@
+{% extends 'index.html' %}
+{% block content %}
+<form method="POST" enctype=multipart/form-data>
+    <label>Choose a CSV file of your latest transactions</label>
+    <input type="file" id="myFile" name="file">
+    <input type="submit" value="Upload">
+</form>
+{% endblock %}
