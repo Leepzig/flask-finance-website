@@ -107,8 +107,6 @@ def insert_many(file="./db/temp_csv/december_2022.csv"):
                 INSERT INTO transactions (transaction_date, posted_date, card_number, description, category, debited_amount, credited_amount)
                 VALUES(%s, %s, %s, %s, %s, %s, %s);
                 """
-            print("BEFPRE SQL STATEMETN")
-            print(list_of_record_dicts[1])
             cur.executemany(sql_insert_statement, list_of_record_dicts)
         
         
