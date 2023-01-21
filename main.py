@@ -3,6 +3,7 @@ from flask_navigation import Navigation
 from werkzeug.utils import secure_filename
 import db.db as db
 import os
+from flask_jwt_router import JwtRoutes
 
 UPLOAD_FOLDER = "./db/temp_csv"
 ALLOWED_EXTENSIONS = {"csv"}
@@ -11,7 +12,13 @@ ALLOWED_EXTENSIONS = {"csv"}
 
 app = Flask(__name__)
 nav = Navigation(app)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# JwtRoutes(app)
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config["WHITE_LIST_ROUTES"] = [
+#     ("POST", "/register"),
+#     ("POST", "/login")
+# ]
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -64,3 +71,7 @@ def get_table():
 @app.route("/login")
 def login():
     return render_template("auth/login.html")
+
+@app.route("/register", methods=["POST"])
+def register():
+    return "I don't need authorizing"

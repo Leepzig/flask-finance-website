@@ -41,10 +41,10 @@ DONE
 
 # Enable csv upload
 ### Make upload input DONE
-### MAke location for the upload files to get stored
-### trigger an automated process to upload the data to the database
-### Return the data? Return what? at least a confirmation message.
-### Put a timestamp of when the data was uploaded and we can query for the data like that.
+### MAke location for the upload files to get stored DONE
+### trigger an automated process to upload the data to the database DONE
+### Return the data? Return what? at least a confirmation message. DONE
+### Put a timestamp of when the data was uploaded and we can query for the data like that. DONE
 https://stackoverflow.com/questions/38245025/how-to-insert-current-datetime-in-postgresql-insert-query
 
 

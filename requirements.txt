@@ -4,3 +4,5 @@ pymongo
 bson
 python-dotenv
 psycopg2
+flask-navigation
+flask-jwt-router
