@@ -74,4 +74,16 @@ def login():
 
 @app.route("/register", methods=["POST"])
 def register():
-    return "I don't need authorizing"
+    user_data = request.get_json()
+    try:
+        user = UserModel(**user_data)
+        user.create_user() # your entity creation logic
+
+        # Here we pass the id as a kwarg to `register_entity`
+        token: str = jwt_routes.register_entity(entity_id=user.id, entity_type="users")
+
+        # Now we can return a new token!
+        return {
+            "message": "User successfully created.",
+            "token": str(token),  # casting is optional
+        }, 200
