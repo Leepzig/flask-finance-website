@@ -141,17 +141,31 @@ def get_obj(row):
     return tuple(obj)
 
 
-#TODO how are files actually uploaded?
-### Testing script to insert data
-# with open("./db/temp_test_csv/december_2022.csv", 'r') as file:
-#     create_transactions_table()
-#     csvreader = csv.reader(file)
-#     next(csvreader)
+############### USER Methods #####################
 
-#     for row in csvreader:
-#         print(row)
-#         obj = get_obj(row)
-#         # print(obj)
-#         insert_one(obj)
-        
+def create_user_table():
+    with conn.cursor() as cur:
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS Users
+        (id serial primary key, 
+        username varchar(30) NOT NULL,
+        password varchar(30) NOT NULL,
+        created_at timestamp default current_timestamp
+        );
+        COMMIT;
+        """)
 
+def create_user(user_info):
+    with conn.cursor() as cur:
+        cur.execute("""
+        INSERT INTO Users (username, password)
+        Values(%s, %s);
+        COMMIT;
+        """, (user_info['username'], user_info['password']))
+
+    
+def login():
+    pass
+
+
+create_user({'username':'leepzig', 'password':'12345'})
