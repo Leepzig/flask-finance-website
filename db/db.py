@@ -5,6 +5,7 @@ import csv
 import datetime
 from pathlib import Path
 from dotenv import load_dotenv
+from flask import session
 
 secret = Path(".env")
 load_dotenv(secret)
@@ -16,7 +17,7 @@ conn = psycopg2.connect(
         password=os.environ.get('DB_PASSWORD'))
 
 conn.autocommit = True
-cur = conn.cursor()
+
 
 ###################### GET FUNCTIONS ######################
 def get_all_transactions():
@@ -168,4 +169,4 @@ def login():
     pass
 
 
-create_user({'username':'leepzig', 'password':'12345'})
+create_user({'username':'neon.duncan@gmail.com', 'password':'test'})
